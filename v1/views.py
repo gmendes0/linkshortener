@@ -2,13 +2,16 @@ import hashlib
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from .models import Link
 from .serializers import LinkSerializer
 
 
 class LinkView(APIView):
     def get(self, request, shortened=None):
+        if shortened is None:
+            raise Http404
+
         link = get_object_or_404(Link, hashed=shortened)
 
         link.clicks += 1
